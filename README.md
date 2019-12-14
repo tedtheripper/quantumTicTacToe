@@ -1,1 +1,1 @@
-"# Quantum tic-tac-toe game" 
+# Quantum tic-tac-toe game
