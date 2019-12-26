@@ -1,4 +1,6 @@
 from graph import Vertex, Graph
+
+
 g = Graph()
 g.add_vertex(1)
 g.add_vertex(2)
