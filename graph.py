@@ -31,24 +31,27 @@ class Graph: # Graf
         for v in self.vertexes.keys():
             print(f"{v} : {self.vertexes[v].neighbours}")
 
-    def is_cyclic_utility(self, v, visited, parent):
+    def is_cyclic_utility(self, v, visited, parent, cycle_elements):
         visited[v] = True
         for n in self.vertexes[v].neighbours:
             if visited[n] == False:
-                if self.is_cyclic_utility(n, visited, v) == True:
+                if self.is_cyclic_utility(n, visited, v, cycle_elements) == True:
+                    cycle_elements.append(v)
                     return True
             elif parent != n:
+                cycle_elements.append(v)
                 return True
         return False
 
     def is_cyclic(self):
         visited = {}
+        cycle_elements = []
         # rec_stack = {}
         for v in self.vertexes.keys():
             visited[v] = False
             # rec_stack[v] = False
         for v in self.vertexes.keys():
             if visited[v] == False:
-                if self.is_cyclic_utility(v, visited, -1) == True:
-                    return True
-        return False
+                if self.is_cyclic_utility(v, visited, -1, cycle_elements) == True:
+                    return True, cycle_elements
+        return False, None
