@@ -3,6 +3,7 @@ class Vertex: # Wierzchołek
         # identyfikacja po id, 1 i 2 to X a 3 i 4 to Y
         self._id = id
         self.neighbours = []
+        self.color = None # Blue is for correct vertexes and red is for bad ones
     
     def get_edges(self):
         return self.neighbours
@@ -52,18 +53,8 @@ class Graph: # Graf
                 return True
         return False
     
-    def has_cycle(self, visited, v, vParent, cycle):
-        if v in visited:
-            cycle.append(v)
-            return True
-        visited.add(v)
-        for u in self.vertexes[v].neighbours:
-            if u != vParent and self.has_cycle(visited, u, v, cycle):
-                cycle.append(v)
-                return True
-        return False
 
-    def is_cyclic(self):
+    def is_cyclic(self, board):
         visited = {}
         cycle_elements = []
         # rec_stack = {}
@@ -73,5 +64,39 @@ class Graph: # Graf
         for v in self.vertexes.keys():
             if visited[v] == False:
                 if self.is_cyclic_utility(v, visited, -1, cycle_elements) == True:
+                    for square in board:
+                        res = all(elem in square for elem in cycle_elements)
+                        if res:
+                            return False, None
                     return True, cycle_elements
         return False, None
+
+    def show_colored_graph(self):
+        for v in self.vertexes.keys():
+            print(f"{v}: {self.vertexes[v].color}")
+
+    def all_colored_in_graph(self, cycle):
+        for v in cycle:
+            if not self.vertexes[v].color:
+                return False
+        return True
+    
+    def handle_collapse(self, cycle, choice, remove_arr=[]):
+        self.vertexes[choice].color = 'Blue'
+        if choice%2==0:
+                self.vertexes[choice-1].color = 'Red'
+        else:
+                self.vertexes[choice+1].color = 'Red'
+        while not self.all_colored_in_graph(cycle):
+            for v in cycle:
+                if self.vertexes[v].color == 'Blue':
+                    for n in self.vertexes[v].neighbours:
+                        if not self.vertexes[n].color:
+                            self.vertexes[n].color = 'Red'
+                            if n%2==0:
+                                if not self.vertexes[n-1].color:
+                                    self.vertexes[n-1].color = 'Blue'
+                            else:
+                                if not self.vertexes[n+1].color:
+                                    self.vertexes[n+1].color = 'Blue'
+        self.show_colored_graph()

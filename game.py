@@ -10,7 +10,7 @@ def show_board():
         # print(f"{game_array.index(square) + 1}: ", end=' ')
         print(square)
 
-def handle_cycle(cycle, move_id_temp):
+def handle_cycle(cycle, move_id_temp, gph):
     cycled_squares = set([])
     for square in game_array:
         for c in cycle:
@@ -21,17 +21,9 @@ def handle_cycle(cycle, move_id_temp):
     print(f"Which one of the element would you like to keep in here? {game_array[choice-1]}")
     # add showing (X1, O4, etc) and chosing only those which are in the cycle
     choice_upper = int(input())
-    to_remove = []
-    for item in game_array[choice-1]:
-        if item != choice_upper:
-            to_remove.append(item)
-    if choice_upper%2 == 0 :
-        g.remove_vertex(choice_upper-1)
-    else:
-        g.remove_vertex(choice_upper+1)
-    removing(to_remove)
+    gph.handle_collapse(cycle, choice_upper)
 
-def removing_util(to_remove_t, start):
+""" def removing_util(to_remove_t, start):
     temp = []
     for tbr in to_remove_t:
         for n in g.get_neighbours(tbr):
@@ -43,7 +35,7 @@ def removing_util(to_remove_t, start):
 def removing(to_remove_t):
     while len(to_remove_t) > 0:
         pass
-        # removing_util()
+        # removing_util() """
 
 
 g = Graph()
@@ -73,16 +65,16 @@ while not game_end:
     show_board()
     print("-----------------------")
     g.show_graph()
-    if move_id%2 == 0 and g.is_cyclic()[0]:
+    if move_id%2 == 0 and g.is_cyclic(game_array)[0]:
         game_end = True
-        cycle = g.is_cyclic()[1]
-        for elem in cycle:
+        cycle = g.is_cyclic(game_array)[1]
+        """ for elem in cycle:
             if elem%2==0 and elem-1 not in cycle:
                 cycle.remove(elem)
             if elem%2==1 and elem+1 not in cycle:
-                cycle.remove(elem)
+                cycle.remove(elem) """
         print("Graph has a cycle" + f"{cycle}")
-        handle_cycle(cycle, move_id)
+        handle_cycle(cycle, move_id, g)
     if move_id%2 == 0:
         which_player = not which_player
     move_id += 1
