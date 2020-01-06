@@ -9,6 +9,7 @@ g.add_edge(1, 2)
 g.add_edge(2, 3)
 g.add_edge(3, 4)
 g.add_edge(1, 3)
+g.remove_vertex(1)
 g.show_graph()
 if g.is_cyclic()[0]:
     print("graf jest cykliczny")

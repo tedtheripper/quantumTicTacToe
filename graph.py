@@ -20,12 +20,21 @@ class Graph: # Graf
     def add_vertex(self, inc_id):
         self.vertexes[inc_id] = Vertex(inc_id)
 
+    def remove_vertex(self, inc_id):
+        for n in self.vertexes[inc_id].neighbours:
+            self.vertexes[n].neighbours.remove(inc_id)
+        self.vertexes[inc_id].neighbours = []
+        del self.vertexes[inc_id]
+
     def add_edge(self, id1, id2):
         self.vertexes[id1].neighbours.append(id2)
         self.vertexes[id2].neighbours.append(id1)
 
     def vertex_exist(self, id):
         return id in self.vertexes.keys()
+
+    def get_neighbours(self, id):
+        return self.vertexes[id].neighbours
 
     def show_graph(self):
         for v in self.vertexes.keys():
@@ -40,6 +49,17 @@ class Graph: # Graf
                     return True
             elif parent != n:
                 cycle_elements.append(v)
+                return True
+        return False
+    
+    def has_cycle(self, visited, v, vParent, cycle):
+        if v in visited:
+            cycle.append(v)
+            return True
+        visited.add(v)
+        for u in self.vertexes[v].neighbours:
+            if u != vParent and self.has_cycle(visited, u, v, cycle):
+                cycle.append(v)
                 return True
         return False
 
