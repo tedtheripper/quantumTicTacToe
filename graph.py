@@ -56,7 +56,6 @@ class Graph: # Graph
                 return True
         return False
     
-
     def is_cyclic(self):
         visited = {}
         cycle_elements = []
@@ -73,6 +72,12 @@ class Graph: # Graph
                             return False, None
                     return True, cycle_elements
         return False, None
+
+    def is_untouchable(self, sq):
+        vs = self.get_all_vertexes_in_given_square(sq)
+        if len(vs)>0 and self.vertexes[vs[0]].get_is_untouchable():
+            return True
+        return False
 
     def show_colored_graph(self):
         for v in self.vertexes.keys():
@@ -106,6 +111,8 @@ class Graph: # Graph
         for vertex_id in self.vertexes.keys():
             if self.vertexes[vertex_id].get_color() == 'Red':
                 to_be_removed.append(vertex_id)
+            if self.vertexes[vertex_id].get_color() == 'Blue':
+                self.vertexes[vertex_id].set_is_untouchable()
         for v in to_be_removed:
             self.remove_vertex(v)
 

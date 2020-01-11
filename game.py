@@ -21,9 +21,11 @@ def handle_cycle(cycle, move_id_temp, gph):
     choice_upper = int(input())
     gph.handle_collapse(cycle, choice_upper)
 
+def check_results(graph):
+    # returns True if game should end
+    pass
 
-g = Graph()
-# game_array = [[], [], [], [], [], [], [], [], []]
+g = Graph() # initializing a new graph
 game_end = False
 move_id = 1 # movement counter
 which_player = False # False -> X, True -> O
@@ -32,9 +34,12 @@ while not game_end:
     print(f"Now plays: {str('X' if not which_player else 'O')}")
     print("input the index of the block <1, 9>: ")
     user_move = int(input()) - 1    # indexing starts at 0
-    # game_array[user_move].append(move_id)
-    if move_id%2 == 0 and (move_id-1 not in g.get_all_vertexes_in_given_square(user_move)):
-        pass   # add an option for user's error
+    while g.is_untouchable(user_move):
+        print('You cant choose this square1')
+        user_move = int(input()) - 1
+    while move_id%2 == 0 and (move_id-1 in g.get_all_vertexes_in_given_square(user_move)):
+        print('You cant choose this square2')
+        user_move = int(input()) - 1  # add an option for user's error
     g.add_vertex(move_id, user_move)
     if if_not_first_move(move_id) and move_id%2 == 0:
         g.add_edge(move_id, move_id-1)
@@ -45,10 +50,11 @@ while not game_end:
     print("-----------------------")
     g.show_graph()
     if move_id%2 == 0 and g.is_cyclic()[0]:
-        game_end = True
+        # game_end = True
         cycle = g.is_cyclic()[1]
         print("Graph has a cycle" + f"{cycle}")
         handle_cycle(cycle, move_id, g)
+        show_board(g)
     if move_id%2 == 0:
         which_player = not which_player
     move_id += 1

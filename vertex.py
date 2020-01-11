@@ -7,6 +7,7 @@ class Vertex: # Wierzchołek
         # Blue is for correct vertexes and red is for bad ones
         # None if the vertexes has not yet been in any cycle
         self._square_index = square_index
+        self._is_untouchable = False
 
     def get_neighbours(self):
         return self._neighbours
@@ -34,3 +35,9 @@ class Vertex: # Wierzchołek
 
     def set_index(self, index):
         self._square_index = index
+
+    def set_is_untouchable(self, touch=True):
+        self._is_untouchable = touch
+    
+    def get_is_untouchable(self):
+        return self._is_untouchable

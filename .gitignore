@@ -1,3 +1,4 @@
 .vscode/settings.json
 __pycache__/graph.cpython-37.pyc
 __pycache__/vertex.cpython-37.pyc
+tasks.txt

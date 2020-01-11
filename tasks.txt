@@ -1,7 +1,5 @@
 Dodaj obsługe cyklu:
-- wyprowadzanie cyklu na planszę
-- wybór pola oraz 'podwyższenie' danego symbolu
-- obsługa usuwania pozostałych symboli
+- wyprowadzanie cyklu na planszę (kolorowanie pól)
 - wprowadzenie 'dużych' danych na nową planszę (obiekt: znak i numer do późniejszych obliczeń)
 
 Dodaj kończenie gry z wynikami:
