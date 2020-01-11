@@ -21,9 +21,76 @@ def handle_cycle(cycle, move_id_temp, gph):
     choice_upper = int(input())
     gph.handle_collapse(cycle, choice_upper)
 
+def who(number):
+    if number%4==1 or number%4==2:
+        return 'X'
+    return 'O'
+
+def check_row(graph: Graph, row_number: int):
+    row_number *= 3
+    if len(graph.get_board()[row_number]) == 0:
+        return False, None
+    pos = who(graph.get_board()[row_number][0])
+    for i in range(row_number, row_number+3):
+        if len(graph.get_board()[i]) == 0:
+            return False, None
+        if not graph.is_untouchable(i) and who(graph.get_board()[i][0]) != pos:
+            return False, None
+    return True, who(graph.get_board()[row_number][0])
+
+def check_column(graph: Graph, column_number: int):
+    if len(graph.get_board()[column_number]) == 0:
+        return False, None
+    pos = who(graph.get_board()[column_number][0])
+    for i in range(column_number, 9, 3):
+        if len(graph.get_board()[i]) == 0:
+            return False, None
+        if not graph.is_untouchable(i) and who(graph.get_board()[i][0]) != pos:
+            return False, None
+    return True, who(graph.get_board()[column_number][0])
+
+def check_X_pattern_left_high(graph):
+    if len(graph.get_board()[0]) == 0:
+        return False, None
+    pos = who(graph.get_board()[0][0])
+    for i in range(0, 9, 4):
+        if len(graph.get_board()[i]) == 0:
+            return False, None
+        if not graph.is_untouchable(i) and who(graph.get_board()[i][0]) != pos:
+            return False, None
+    return True, who(graph.get_board()[0][0])
+
+def check_X_pattern_left_low(graph):
+    if len(graph.get_board()[2]) == 0:
+        return False, None
+    pos = who(graph.get_board()[2][0])
+    for i in range(2, 8, 2):
+        if len(graph.get_board()[i]) == 0:
+            return False, None
+        if not graph.is_untouchable(i) and who(graph.get_board()[i][0]) != pos:
+            return False, None
+    return True, who(graph.get_board()[2][0])
+
 def check_results(graph):
-    # returns True if game should end
-    pass
+    # returns tuple (True, who) if game ends
+    # possibilities:
+    # X wins
+    # O wins
+    # both win
+    wins = set([])
+    for row in range(0, 3):
+        if check_row(graph, row)[0]:
+            wins.add(check_row(graph, row)[1])
+    for column in range(0, 3):
+        if check_column(graph, column)[0]:
+            wins.add(check_column(graph, column)[1])
+    if check_X_pattern_left_high(graph)[0]:
+        wins.add(check_X_pattern_left_high(graph)[1])
+    if check_X_pattern_left_low(graph)[0]:
+        wins.add(check_X_pattern_left_low(graph)[1])
+    if len(wins) > 0:
+        return True, wins
+    return False, None
 
 g = Graph() # initializing a new graph
 game_end = False
@@ -55,6 +122,9 @@ while not game_end:
         print("Graph has a cycle" + f"{cycle}")
         handle_cycle(cycle, move_id, g)
         show_board(g)
+        if check_results(g)[0]:
+            game_end = True
+            print(f"The end | Winner: {check_results(g)[1]}")
     if move_id%2 == 0:
         which_player = not which_player
     move_id += 1
