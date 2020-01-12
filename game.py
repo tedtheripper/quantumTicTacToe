@@ -10,28 +10,51 @@ def show_board(graph: Graph):
     for v in graph.get_board():
         print(v)
 
-def element_choice_btn_pressed(button: Button, gph: Graph, cycle: list, c_choice: int):
+def get_symbol(number: int):
+    if number%4==1 or number%4==2:
+        if number%2==0:
+            res = f"X{int(number/2)}"
+        else:
+            res = f"X{int((number+1)/2)}"
+    else:
+        if number%2==0:
+            res = f"O{int(number/2)}"
+        else:
+            res = f"O{int((number+1)/2)}"
+    return res
+
+def update_board(gph: Graph, buttons: list):
+    board = gph.get_board()
+    enable_all_buttons(buttons)
+    for i in range(0, 9):
+        # change background and enable buttons
+        if gph.is_untouchable(i):
+            buttons[i].configure(bg='#cccccc')
+            buttons[i].configure(state=DISABLED)
+            res = get_symbol(board[i][0])
+            buttons[i]['text'] = str(res)
+
+def element_choice_btn_pressed(gph: Graph, cycle: list, c_choice: int, buttons: list):
     choice_upper = c_choice
     # add removing stuff from main buttons and hiding additional ones 
     gph.handle_collapse(cycle, choice_upper)
+    update_board(gph, buttons)
+    label_choice1['text'] = ""
+    if check_results(gph)[0]:
+        game_end = True
+        for b in buttons:
+            b.configure(state=DISABLED)
+        tkinter.messagebox.showinfo('WIN', f'{check_results(gph)[1]}')
 
-def square_choice_btn_pressed(button: Button, gph: Graph, cycle: list):
-    choice = int(button['text'])-1
+def square_choice_btn_pressed(button: Button, gph: Graph, cycle: list, buttons: list):
+    choice = int(button['text']) - 1 
     correct_v_choice = gph.get_correct_square_to_choose(cycle, choice)
     choice2_buttons = []
     i = 5
     for c_choice in correct_v_choice:
-        if c_choice%4==1 or c_choice%4==2:
-            if c_choice%2==0:
-                res = f"X{int(c_choice/2)}"
-            else:
-                res = f"X{int((c_choice+1)/2)}"
-        else:
-            if c_choice%2==0:
-                res = f"O{int(c_choice/2)}"
-            else:
-                res = f"O{int((c_choice+1)/2)}"
-        button = Button(tk, text=res, bg='white', height=1, width=2, command=lambda: element_choice_btn_pressed(button, gph, cycle, c_choice))
+        result = get_symbol(c_choice)
+        button = Button(tk, text=result, bg='white', height=1, width=2)
+        button.configure(command=lambda gph=gph, cycle=cycle, c_choice=c_choice, buttons=buttons : element_choice_btn_pressed(gph, cycle, c_choice, buttons))
         button.grid(row=2, column=i)
         i += 1
         choice2_buttons.append(button)
@@ -44,18 +67,15 @@ def handle_cycle(cycle: list, move_id_temp: int, gph: Graph, buttons: list):
         buttons[c].configure(bg='blue')
     disable_all_buttons(buttons)
     tkinter.messagebox.showinfo('Cycle', f'The cycle has been found\n{who(move_id_temp+1)} is choosing')
-    label_choice1 = Label(tk, text="Squares available", height=1, width=12)
-    label_choice1.grid(row=0, column=4)
+    label_choice1['text'] = "Squares available"
     i = 5
     choice1_buttons = []
     for c in cycled_squares:
-        button = Button(tk, text=c+1, bg='white', height=1, width=1, command=lambda: square_choice_btn_pressed(button, gph, cycle))
+        button = Button(tk, text=c+1, bg='white', height=1, width=1)
+        button.configure(command=lambda button=button, gph=gph, cycle=cycle, buttons=buttons: square_choice_btn_pressed(button, gph, cycle, buttons))
         button.grid(row=1, column=i)
         i += 1
-        choice1_buttons.append(button)
-    # create additional buttons for choosing which square you would like to press 
-    # and which element of the given square should be collapsed
-    
+        choice1_buttons.append((button, c))  
 
 def who(number: int):
     if number%4==1 or number%4==2:
@@ -133,6 +153,10 @@ def disable_all_buttons(buttons: list):
     for b in buttons:
         b.configure(state=DISABLED)
 
+def enable_all_buttons(buttons: list):
+    for b in buttons:
+        b.configure(state=NORMAL)
+
 def btn_pressed(button, buttons):
     # button.configure(state=DISABLED)
     global move_id, game_end, which_player, g
@@ -144,18 +168,7 @@ def btn_pressed(button, buttons):
         tkinter.messagebox.showinfo('Error', 'You already put something in here')
         return False
     g.add_vertex(move_id, index)
-    if which_player:
-        res = "O"
-        if move_id%2==0:
-            res += str(int(move_id/2))
-        else:
-            res += str(int((move_id+1)/2))
-    else:
-        res = "X"
-        if move_id%2==0:
-            res += str(int(move_id/2))
-        else:
-            res += str(int((move_id+1)/2))
+    res = get_symbol(move_id)
     button['text'] += f" {res}"
     if if_not_first_move(move_id) and move_id%2 == 0:
         g.add_edge(move_id, move_id-1)
@@ -170,12 +183,7 @@ def btn_pressed(button, buttons):
         # print("Graph has a cycle" + f"{cycle}")
         handle_cycle(cycle, move_id, g, buttons)
         # show_board(g)
-        if check_results(g)[0]:
-            game_end = True
-            for b in buttons:
-                b.configure(state=DISABLED)
-            thinter.messagebox.showinfo('WIN', f'{check_results(g)[1]}')
-            # print(f"The end | Winner: {check_results(g)[1]}")
+        # print(f"The end | Winner: {check_results(g)[1]}")
     if move_id%2 == 0:
         which_player = not which_player
     move_id += 1
@@ -188,7 +196,7 @@ game_end = False
 move_id = 1 # movement counter
 which_player = False # False -> X, True -> O
 
-label = Label(tk, text=" ", height=1, width=12)
+label = Label(tk, text="X's turn", height=1, width=12)
 label.grid(row=1, column=0)
 buttons = []
 button1 = Button(tk, text=" ", bg='white', height=5, width=12, command=lambda: btn_pressed(button1, buttons))
@@ -218,7 +226,8 @@ buttons.append(button8)
 button9 = Button(tk, text=" ", bg='white', height=5, width=12, command=lambda: btn_pressed(button9, buttons))
 button9.grid(row=4, column=2)
 buttons.append(button9)
-
+label_choice1 = Label(tk, text="", height=1, width=12)
+label_choice1.grid(row=0, column=4)
 
 tk.mainloop()
 """ 
