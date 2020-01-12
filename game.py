@@ -34,12 +34,21 @@ def update_board(gph: Graph, buttons: list):
             res = get_symbol(board[i][0])
             buttons[i]['text'] = str(res)
 
+def destroy_all_choice_buttons():
+    print('Buttons destroyed')
+    for i in range(0, len(all_buttons)):
+        for button in all_buttons[i]:
+            button.destroy()
+    while len(all_buttons) > 0:
+        del all_buttons[0]
+
 def element_choice_btn_pressed(gph: Graph, cycle: list, c_choice: int, buttons: list):
     choice_upper = c_choice
     # add removing stuff from main buttons and hiding additional ones 
     gph.handle_collapse(cycle, choice_upper)
     update_board(gph, buttons)
     label_choice1['text'] = ""
+    destroy_all_choice_buttons()
     if check_results(gph)[0]:
         game_end = True
         for b in buttons:
@@ -58,15 +67,17 @@ def square_choice_btn_pressed(button: Button, gph: Graph, cycle: list, buttons: 
         button.grid(row=2, column=i)
         i += 1
         choice2_buttons.append(button)
+    all_buttons.append(choice2_buttons)
 
 def handle_cycle(cycle: list, move_id_temp: int, gph: Graph, buttons: list):
     cycled_squares = set([])
     for c in cycle:
         cycled_squares.add(g.get_square_index(c))
     for c in cycled_squares:
-        buttons[c].configure(bg='blue')
+        buttons[c].configure(bg='#03bafc')
     disable_all_buttons(buttons)
     tkinter.messagebox.showinfo('Cycle', f'The cycle has been found\n{who(move_id_temp+1)} is choosing')
+    label_choice1.configure(width=12)
     label_choice1['text'] = "Squares available"
     i = 5
     choice1_buttons = []
@@ -75,7 +86,8 @@ def handle_cycle(cycle: list, move_id_temp: int, gph: Graph, buttons: list):
         button.configure(command=lambda button=button, gph=gph, cycle=cycle, buttons=buttons: square_choice_btn_pressed(button, gph, cycle, buttons))
         button.grid(row=1, column=i)
         i += 1
-        choice1_buttons.append((button, c))  
+        choice1_buttons.append(button)
+    all_buttons.append(choice1_buttons)
 
 def who(number: int):
     if number%4==1 or number%4==2:
@@ -180,7 +192,7 @@ def btn_pressed(button, buttons):
     g.show_graph()
     if move_id%2 == 0 and g.is_cyclic()[0]:
         cycle = g.is_cyclic()[1]
-        # print("Graph has a cycle" + f"{cycle}")
+        print("Graph has a cycle" + f"{cycle}")
         handle_cycle(cycle, move_id, g, buttons)
         # show_board(g)
         # print(f"The end | Winner: {check_results(g)[1]}")
@@ -195,6 +207,7 @@ g = Graph() # initializing a new graph
 game_end = False
 move_id = 1 # movement counter
 which_player = False # False -> X, True -> O
+all_buttons = []
 
 label = Label(tk, text="X's turn", height=1, width=12)
 label.grid(row=1, column=0)
@@ -226,40 +239,7 @@ buttons.append(button8)
 button9 = Button(tk, text=" ", bg='white', height=5, width=12, command=lambda: btn_pressed(button9, buttons))
 button9.grid(row=4, column=2)
 buttons.append(button9)
-label_choice1 = Label(tk, text="", height=1, width=12)
+label_choice1 = Label(tk, text="", height=1, width=0)
 label_choice1.grid(row=0, column=4)
 
 tk.mainloop()
-""" 
-while not game_end:
-    label['text'] = f"{str('X' if not which_player else 'O')}'s turn"
-    # print("input the index of the block <1, 9>: ")
-    user_move = int(input()) - 1    # indexing starts at 0
-    while g.is_untouchable(user_move):
-        print('You cant choose this square1')
-        user_move = int(input()) - 1
-    while move_id%2 == 0 and (move_id-1 in g.get_all_vertexes_in_given_square(user_move)):
-        print('You cant choose this square2')
-        user_move = int(input()) - 1  # add an option for user's error
-    g.add_vertex(move_id, user_move)
-    if if_not_first_move(move_id) and move_id%2 == 0:
-        g.add_edge(move_id, move_id-1)
-    for vertex in g.get_all_vertexes_in_given_square(user_move):
-        if vertex != move_id:
-            g.add_edge(move_id, vertex)
-    # show_board(g)
-    print("-----------------------")
-    # g.show_graph()
-    if move_id%2 == 0 and g.is_cyclic()[0]:
-        # game_end = True
-        cycle = g.is_cyclic()[1]
-        print("Graph has a cycle" + f"{cycle}")
-        handle_cycle(cycle, move_id, g)
-        # show_board(g)
-        if check_results(g)[0]:
-            game_end = True
-            print(f"The end | Winner: {check_results(g)[1]}")
-    if move_id%2 == 0:
-        which_player = not which_player
-    move_id += 1
- """
