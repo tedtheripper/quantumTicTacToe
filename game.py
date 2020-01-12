@@ -261,9 +261,9 @@ def btn_pressed(button: Button, buttons: list) -> bool:
     for vertex in g.get_all_vertexes_in_given_square(index):
         if vertex != move_id:
             g.add_edge(move_id, vertex)
-    # show_board(g)
-    # print("-----------------------")
-    # g.show_graph()
+    show_board(g)
+    print("-----------------------")
+    g.show_graph()
     if move_id%2 == 0 and g.is_cyclic()[0]:
         cycle = g.is_cyclic()[1]
         # print("Graph has a cycle" + f"{cycle}")
