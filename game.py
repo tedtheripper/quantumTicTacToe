@@ -2,7 +2,6 @@ from graph import Graph
 from tkinter import *
 import tkinter.messagebox
 
-# REWRITE THIS AS CLASSES WITH METHODS for further use
 
 def if_not_first_move(move_id: int):
     return False if move_id==1 else True
@@ -11,17 +10,52 @@ def show_board(graph: Graph):
     for v in graph.get_board():
         print(v)
 
-def handle_cycle(cycle: list, move_id_temp: int, gph: Graph):
+def element_choice_btn_pressed(button: Button, gph: Graph, cycle: list, c_choice: int):
+    choice_upper = c_choice
+    # add removing stuff from main buttons and hiding additional ones 
+    gph.handle_collapse(cycle, choice_upper)
+
+def square_choice_btn_pressed(button: Button, gph: Graph, cycle: list):
+    choice = int(button['text'])-1
+    correct_v_choice = gph.get_correct_square_to_choose(cycle, choice)
+    choice2_buttons = []
+    i = 5
+    for c_choice in correct_v_choice:
+        if c_choice%4==1 or c_choice%4==2:
+            if c_choice%2==0:
+                res = f"X{int(c_choice/2)}"
+            else:
+                res = f"X{int((c_choice+1)/2)}"
+        else:
+            if c_choice%2==0:
+                res = f"O{int(c_choice/2)}"
+            else:
+                res = f"O{int((c_choice+1)/2)}"
+        button = Button(tk, text=res, bg='white', height=1, width=2, command=lambda: element_choice_btn_pressed(button, gph, cycle, c_choice))
+        button.grid(row=2, column=i)
+        i += 1
+        choice2_buttons.append(button)
+
+def handle_cycle(cycle: list, move_id_temp: int, gph: Graph, buttons: list):
     cycled_squares = set([])
     for c in cycle:
-        cycled_squares.add(g.get_square_index(c)+1)
-    print(f"Choose one square from the cycle: {cycled_squares}")
-    choice = int(input())
-    correct_v_choice = gph.get_correct_square_to_choose(cycle, choice-1)
-    print(f"Which one of the element would you like to keep in here? {correct_v_choice}")
-    # add showing (X1, O4, etc) and chosing only those which are in the cycle
-    choice_upper = int(input())
-    gph.handle_collapse(cycle, choice_upper)
+        cycled_squares.add(g.get_square_index(c))
+    for c in cycled_squares:
+        buttons[c].configure(bg='blue')
+    disable_all_buttons(buttons)
+    tkinter.messagebox.showinfo('Cycle', f'The cycle has been found\n{who(move_id_temp+1)} is choosing')
+    label_choice1 = Label(tk, text="Squares available", height=1, width=12)
+    label_choice1.grid(row=0, column=4)
+    i = 5
+    choice1_buttons = []
+    for c in cycled_squares:
+        button = Button(tk, text=c+1, bg='white', height=1, width=1, command=lambda: square_choice_btn_pressed(button, gph, cycle))
+        button.grid(row=1, column=i)
+        i += 1
+        choice1_buttons.append(button)
+    # create additional buttons for choosing which square you would like to press 
+    # and which element of the given square should be collapsed
+    
 
 def who(number: int):
     if number%4==1 or number%4==2:
@@ -95,6 +129,10 @@ def check_results(graph: Graph):
         return True, wins
     return False, None
 
+def disable_all_buttons(buttons: list):
+    for b in buttons:
+        b.configure(state=DISABLED)
+
 def btn_pressed(button, buttons):
     # button.configure(state=DISABLED)
     global move_id, game_end, which_player, g
@@ -130,7 +168,7 @@ def btn_pressed(button, buttons):
     if move_id%2 == 0 and g.is_cyclic()[0]:
         cycle = g.is_cyclic()[1]
         # print("Graph has a cycle" + f"{cycle}")
-        handle_cycle(cycle, move_id, g)
+        handle_cycle(cycle, move_id, g, buttons)
         # show_board(g)
         if check_results(g)[0]:
             game_end = True
@@ -141,6 +179,7 @@ def btn_pressed(button, buttons):
     if move_id%2 == 0:
         which_player = not which_player
     move_id += 1
+    label['text'] = f"{str('X' if not which_player else 'O')}'s turn"
 
 tk = Tk()
 tk.title("Quantum Tic Tac Toe")
@@ -181,6 +220,8 @@ button9.grid(row=4, column=2)
 buttons.append(button9)
 
 
+tk.mainloop()
+""" 
 while not game_end:
     label['text'] = f"{str('X' if not which_player else 'O')}'s turn"
     # print("input the index of the block <1, 9>: ")
@@ -212,4 +253,4 @@ while not game_end:
     if move_id%2 == 0:
         which_player = not which_player
     move_id += 1
-    
+ """
