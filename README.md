@@ -4,10 +4,13 @@ The quantum version of classic Tic Tac Toe game. [Wikipedia](https://en.wikipedi
 
 ### Basic rules:
 * You make two quantum moves each turn until the cycle is found\
+
 ![](https://github.com/tedtheripper/quantumTicTacToe/blob/master/img/quantum_move.png)
 
-![](https://github.com/tedtheripper/quantumTicTacToe/blob/master/img/cycle.png)
-* Then you have to choose which element you want to collapse into classical move
-* Collapsed elements 
+* Then you have to choose which element you want to collapse into classical move\
+
+![](https://github.com/tedtheripper/quantumTicTacToe/blob/master/img/collapse.png)
+
+* To win, put Xs in the same pattern as you would do to win normal tic tac toe
 
 ###### In this version you are able to compete with computer player
