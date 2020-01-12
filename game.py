@@ -45,9 +45,9 @@ def destroy_all_choice_buttons():
 def handle_win(result: set, gph: Graph):
     if len(result) > 1:
         if move_id%4==0:
-            tkinter.messagebox.showinfo('WIN', f"Winner: O")   
+            tkinter.messagebox.showinfo('WIN', f"Winner: O: 1pt\nX: 0.5pt")   
         else:
-            tkinter.messagebox.showinfo('WIN', f"Winner: X") 
+            tkinter.messagebox.showinfo('WIN', f"Winner: X: 1pt\nO: 0.5pt") 
     else:
         tkinter.messagebox.showinfo('WIN', f"Winner: {check_results(gph)[1].pop()}")
 
