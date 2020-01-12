@@ -79,7 +79,7 @@ def update_board(gph: Graph, buttons: list) -> None:
             res = get_symbol(board[i][0])
             buttons[i]['text'] = str(res)
 
-# Buttons functions
+# Button functions
 def disable_all_buttons(buttons: list) -> None:
     # Disables all board-buttons
     for b in buttons:
