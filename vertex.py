@@ -22,36 +22,36 @@ class Vertex: # Node class
         self.__square_index = square_index
         self.__is_untouchable = False
 
-    def get_neighbours(self): -> list
+    def get_neighbours(self) -> list:
         return self.__neighbours
 
-    def add_neighbour(self, id: int): -> None
+    def add_neighbour(self, id: int) -> None:
         if id not in self.__neighbours:
             self.__neighbours.append(id)
 
-    def remove_neighbour(self, id: int): -> None
+    def remove_neighbour(self, id: int) -> None:
         if id in self.__neighbours:
             self.__neighbours.remove(id)
 
-    def clean_neighbours(self): -> None
+    def clean_neighbours(self) -> None:
         self.__neighbours = []
 
-    def get_color(self): -> str
+    def get_color(self) -> str:
         return self.__color
     
-    def set_color(self, color: str): -> None
+    def set_color(self, color: str) -> None:
         if self.__color is None:
             self.__color = color
 
-    def get_index(self): -> int
+    def get_index(self) -> int:
         return self.__square_index
 
-    def set_index(self, index: int): -> None
+    def set_index(self, index: int) -> None:
         self.__square_index = index
 
-    def set_is_untouchable(self, touch: bool = True): -> None
+    def set_is_untouchable(self, touch: bool = True) -> None:
         # sets the vertex immutability
         self.__is_untouchable = touch
     
-    def get_is_untouchable(self): -> bool
+    def get_is_untouchable(self) -> bool:
         return self.__is_untouchable

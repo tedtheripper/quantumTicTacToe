@@ -4,7 +4,7 @@ import tkinter.messagebox
 import random
 
 
-def computer_player(mode: int, buttons: list, g: Graph, cycle: list = None): -> None
+def computer_player(mode: int, buttons: list, g: Graph, cycle: list = None) -> None:
     # Operates the simple computer player
     # modes of the player:
     # 0 - normal move
@@ -30,16 +30,16 @@ def computer_player(mode: int, buttons: list, g: Graph, cycle: list = None): -> 
         rand = all_buttons[2][index]
         element_choice_btn_pressed(g, cycle, rand, buttons)
 
-def if_not_first_move(move_id: int): -> bool
+def if_not_first_move(move_id: int) -> bool:
     # checks if it is the first move of the game
     return False if move_id==1 else True
 
-def show_board(graph: Graph): -> None
+def show_board(graph: Graph) -> None:
     # Displays the gameboard in the console
     for v in graph.get_board():
         print(v)
 
-def get_symbol(number: int): -> str
+def get_symbol(number: int) -> str:
     # returns human-friendly node ID
     if number%4==1 or number%4==2:
         if number%2==0:
@@ -53,7 +53,7 @@ def get_symbol(number: int): -> str
             res = f"O{int((number+1)/2)}"
     return res
 
-def update_board(gph: Graph, buttons: list): -> None
+def update_board(gph: Graph, buttons: list) -> None:
     # Updates the GUI board
     board = gph.get_board()
     enable_all_buttons(buttons)
@@ -65,7 +65,7 @@ def update_board(gph: Graph, buttons: list): -> None
             res = get_symbol(board[i][0])
             buttons[i]['text'] = str(res)
 
-def destroy_all_choice_buttons(): -> None
+def destroy_all_choice_buttons() -> None:
     # Removes side buttons for slim and pretty look
     print('Buttons destroyed')
     for i in range(0, 2):
@@ -74,17 +74,20 @@ def destroy_all_choice_buttons(): -> None
     while len(all_buttons) > 0:
         del all_buttons[0]
 
-def handle_win(result: set, gph: Graph): -> None
+def handle_win(result: set, gph: Graph) -> None:
     # Displays who won the game
-    if len(result) > 1:
-        if move_id%4==0:
-            tkinter.messagebox.showinfo('WIN', f"Winner: O: 1pt\nX: 0.5pt")   
-        else:
-            tkinter.messagebox.showinfo('WIN', f"Winner: X: 1pt\nO: 0.5pt") 
+    if result is None:
+        tkinter.messagebox.showinfo('Results', f"DRAW")
     else:
-        tkinter.messagebox.showinfo('WIN', f"Winner: {check_results(gph)[1].pop()}")
+        if len(result) > 1:
+            if move_id%4==0:
+                tkinter.messagebox.showinfo('Results', f"Winner: O: 1pt\nX: 0.5pt")   
+            else:
+                tkinter.messagebox.showinfo('Results', f"Winner: X: 1pt\nO: 0.5pt") 
+        else:
+            tkinter.messagebox.showinfo('Results', f"Winner: {check_results(gph)[1].pop()}")
 
-def element_choice_btn_pressed(gph: Graph, cycle: list, c_choice: int, buttons: list): -> None
+def element_choice_btn_pressed(gph: Graph, cycle: list, c_choice: int, buttons: list) -> None:
     # Operates on the player's node choice and handles the win 
     choice_upper = c_choice 
     gph.handle_collapse(cycle, choice_upper)
@@ -97,7 +100,7 @@ def element_choice_btn_pressed(gph: Graph, cycle: list, c_choice: int, buttons: 
             b.configure(state=DISABLED)
         handle_win(check_results(gph)[1], gph)
 
-def square_choice_btn_pressed(button: Button, gph: Graph, cycle: list, buttons: list): -> None
+def square_choice_btn_pressed(button: Button, gph: Graph, cycle: list, buttons: list) -> None:
     # Operates on the player's square choice
     choice = int(button['text']) - 1 
     correct_v_choice = gph.get_correct_square_to_choose(cycle, choice)
@@ -116,7 +119,7 @@ def square_choice_btn_pressed(button: Button, gph: Graph, cycle: list, buttons: 
     if move_id%4 == 2:
         computer_player(2, buttons, gph, cycle)
 
-def handle_cycle(cycle: list, move_id_temp: int, gph: Graph, buttons: list): -> None
+def handle_cycle(cycle: list, move_id_temp: int, gph: Graph, buttons: list) -> None:
     # Handles situation when the cycle is discovered and further actions are needed
     cycled_squares = set([])
     for c in cycle:
@@ -140,13 +143,13 @@ def handle_cycle(cycle: list, move_id_temp: int, gph: Graph, buttons: list): -> 
     if move_id%4 == 2:
         computer_player(1, buttons, gph, cycle=cycle)
 
-def who(number: int): -> str
+def who(number: int) -> str:
     # Returns the character which will be placed in the board instead of nodes' id
     if number%4==1 or number%4==2:
         return 'X'
     return 'O'
 
-def check_row(graph: Graph, row_number: int): -> (bool, str)
+def check_row(graph: Graph, row_number: int) -> (bool, str):
     # checks all rows to find the winning situation
     row_number *= 3
     if len(graph.get_board()[row_number]) == 0:
@@ -159,7 +162,7 @@ def check_row(graph: Graph, row_number: int): -> (bool, str)
             return False, None
     return True, who(graph.get_board()[row_number][0])
 
-def check_column(graph: Graph, column_number: int): -> (bool, str)
+def check_column(graph: Graph, column_number: int) -> (bool, str):
     # Checks all columns to find the winning situation
     if len(graph.get_board()[column_number]) == 0:
         return False, None
@@ -169,9 +172,9 @@ def check_column(graph: Graph, column_number: int): -> (bool, str)
             return False, None
         if not graph.is_untouchable(i) or who(graph.get_board()[i][0]) != pos:
             return False, None
-    return True, who(graph.get_board()[column_number][0]), 1
+    return True, who(graph.get_board()[column_number][0])
 
-def check_X_pattern_left_high(graph: Graph): -> (bool, str)
+def check_X_pattern_left_high(graph: Graph) -> (bool, str):
     # Checks if one part of X pattern occurs
     if len(graph.get_board()[0]) == 0:
         return False, None
@@ -181,9 +184,9 @@ def check_X_pattern_left_high(graph: Graph): -> (bool, str)
             return False, None
         if not graph.is_untouchable(i) or who(graph.get_board()[i][0]) != pos:
             return False, None
-    return True, who(graph.get_board()[0][0]), 2
+    return True, who(graph.get_board()[0][0])
 
-def check_X_pattern_left_low(graph: Graph): -> (bool, str)
+def check_X_pattern_left_low(graph: Graph) -> (bool, str):
     # Checks if one part of X pattern occurs
     if len(graph.get_board()[2]) == 0:
         return False, None
@@ -193,9 +196,9 @@ def check_X_pattern_left_low(graph: Graph): -> (bool, str)
             return False, None
         if not graph.is_untouchable(i) or who(graph.get_board()[i][0]) != pos:
             return False, None
-    return True, who(graph.get_board()[2][0]), 3
+    return True, who(graph.get_board()[2][0])
 
-def check_results(graph: Graph): -> bool, set
+def check_results(graph: Graph) -> (bool, set):
     # Returns tuple (True, who) if game ends
     # Possibilities:
     # X wins
@@ -206,32 +209,35 @@ def check_results(graph: Graph): -> bool, set
     for row in range(0, 3):
         if check_row(graph, row)[0]:
             wins.add(check_row(graph, row)[1])
-            print(check_row(graph, row)[2])
     for column in range(0, 3):
         if check_column(graph, column)[0]:
             wins.add(check_column(graph, column)[1])
-            print(check_column(graph, column)[2])
     if check_X_pattern_left_high(graph)[0]:
         wins.add(check_X_pattern_left_high(graph)[1])
-        print(check_X_pattern_left_high(graph)[2])
     if check_X_pattern_left_low(graph)[0]:
         wins.add(check_X_pattern_left_low(graph)[1])
-        print(check_X_pattern_left_low(graph)[2])
     if len(wins) > 0:
         return True, wins
+    else:
+        res = 0
+        for i in range(0, len(graph.get_board())):
+            if len(graph.get_board()[i]) == 1 and graph.is_untouchable(i):
+                res += 1
+        if res == 9 or res == 8:
+            return True, None
     return False, None
 
-def disable_all_buttons(buttons: list): -> None
+def disable_all_buttons(buttons: list) -> None:
     # Disables all board-buttons
     for b in buttons:
         b.configure(state=DISABLED)
 
-def enable_all_buttons(buttons: list): -> None
+def enable_all_buttons(buttons: list) -> None:
     # Enables all board-buttons
     for b in buttons:
         b.configure(state=NORMAL)
 
-def btn_pressed(button: Button, buttons: list): -> None
+def btn_pressed(button: Button, buttons: list) -> None:
     # Handles player's normal moves
     global move_id, game_end, which_player, g
     index = buttons.index(button)
