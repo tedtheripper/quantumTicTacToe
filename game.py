@@ -79,7 +79,7 @@ def update_board(gph: Graph, buttons: list) -> None:
             res = get_symbol(board[i][0])
             buttons[i]['text'] = str(res)
 
-# Buttons methods
+# Buttons functions
 def disable_all_buttons(buttons: list) -> None:
     # Disables all board-buttons
     for b in buttons:
@@ -206,7 +206,7 @@ def handle_cycle(cycle: list, move_id_temp: int, gph: Graph, buttons: list) -> N
     if move_id%4 == 2:
         computer_player(1, buttons, gph, cycle=cycle)
 
-# Checking methods
+# Checking functions
 def check_row(graph: Graph, row_number: int) -> (bool, str):
     # checks all rows to find the winning situation
     row_number *= 3
