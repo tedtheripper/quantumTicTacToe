@@ -1,6 +1,33 @@
 from graph import Graph
 from tkinter import *
 import tkinter.messagebox
+import random
+
+
+def computer_player(mode: int, buttons: list, g: Graph, cycle: list = None):
+    # modes of the computer player:
+    # 0 - normal move
+    # 1 - choosing the square to collapse
+    # 2 - choosing the item to collapse
+    if mode == 0:
+        move1 = -1
+        for i in range(0, 2):
+            rand = random.randint(0, 8)
+            if g.is_untouchable(rand) or rand == move1:
+                while g.is_untouchable(rand) or rand == move1:
+                    rand = random.randint(0, 8)
+                btn_pressed(buttons[rand], buttons)
+                move1 = rand
+            else:
+                btn_pressed(buttons[rand], buttons)
+                move1 = rand
+    elif mode == 1:
+        rand = random.randint(0, len(all_buttons[0])-1)
+        square_choice_btn_pressed(all_buttons[0][rand], g, cycle, buttons)
+    elif mode == 2:
+        index = random.randint(0, len(all_buttons[2])-1)
+        rand = all_buttons[2][index]
+        element_choice_btn_pressed(g, cycle, rand, buttons, True)
 
 
 def if_not_first_move(move_id: int):
@@ -36,7 +63,7 @@ def update_board(gph: Graph, buttons: list):
 
 def destroy_all_choice_buttons():
     print('Buttons destroyed')
-    for i in range(0, len(all_buttons)):
+    for i in range(0, 2):
         for button in all_buttons[i]:
             button.destroy()
     while len(all_buttons) > 0:
@@ -51,7 +78,7 @@ def handle_win(result: set, gph: Graph):
     else:
         tkinter.messagebox.showinfo('WIN', f"Winner: {check_results(gph)[1].pop()}")
 
-def element_choice_btn_pressed(gph: Graph, cycle: list, c_choice: int, buttons: list):
+def element_choice_btn_pressed(gph: Graph, cycle: list, c_choice: int, buttons: list, computer=False):
     choice_upper = c_choice
     # add removing stuff from main buttons and hiding additional ones 
     gph.handle_collapse(cycle, choice_upper)
@@ -77,6 +104,9 @@ def square_choice_btn_pressed(button: Button, gph: Graph, cycle: list, buttons: 
         i += 1
         choice2_buttons.append(button)
     all_buttons.append(choice2_buttons)
+    all_buttons.append(correct_v_choice)
+    if move_id%4 == 2:
+        computer_player(2, buttons, gph, cycle)
 
 def handle_cycle(cycle: list, move_id_temp: int, gph: Graph, buttons: list):
     cycled_squares = set([])
@@ -97,6 +127,8 @@ def handle_cycle(cycle: list, move_id_temp: int, gph: Graph, buttons: list):
         i += 1
         choice1_buttons.append(button)
     all_buttons.append(choice1_buttons)
+    if move_id%4 == 2:
+        computer_player(1, buttons, gph, cycle=cycle)
 
 def who(number: int):
     if number%4==1 or number%4==2:
@@ -213,6 +245,8 @@ def btn_pressed(button, buttons):
         which_player = not which_player
     move_id += 1
     label['text'] = f"{str('X' if not which_player else 'O')}'s turn"
+    if move_id%4 == 3:
+        computer_player(0, buttons, g)
 
 tk = Tk()
 tk.title("Quantum Tic Tac Toe")
@@ -221,6 +255,8 @@ game_end = False
 move_id = 1 # movement counter
 which_player = False # False -> X, True -> O
 all_buttons = []
+
+
 
 label = Label(tk, text="X's turn", height=1, width=12)
 label.grid(row=1, column=0)
