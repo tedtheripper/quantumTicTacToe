@@ -44,28 +44,34 @@ class Graph: # Graph
         for v in self.vertexes.keys():
             print(f"{v} : {self.vertexes[v].get_neighbours()}")
 
-    def is_cyclic_utility(self, v, visited, parent, cycle_elements):
+    def is_cyclic_utility(self, v, visited, parent, cycle_elements, last):
         visited[v] = True
         for n in self.vertexes[v].get_neighbours():
             if visited[n] == False:
-                if self.is_cyclic_utility(n, visited, v, cycle_elements) == True:
-                    cycle_elements.append(v)
+                if self.is_cyclic_utility(n, visited, v, cycle_elements, last) == True:
+                    if len(last) > 0:
+                        if n == last[0]:
+                            last.remove(n)
+                    if len(last) > 0:
+                        cycle_elements.append(v)
                     return True
             elif parent != n:
+                last.append(n)
                 cycle_elements.append(v)
                 return True
         return False
-    
+
     def is_cyclic(self):
         visited = {}
         cycle_elements = []
+        last = []
         # rec_stack = {}
         for v in self.vertexes.keys():
             visited[v] = False
             # rec_stack[v] = False
         for v in self.vertexes.keys():
             if visited[v] == False:
-                if self.is_cyclic_utility(v, visited, -1, cycle_elements) == True:
+                if self.is_cyclic_utility(v, visited, -1, cycle_elements, last) == True:
                     for square in self.get_board(): # checks if cycle isn't inside one square
                         res = all(elem in square for elem in cycle_elements)
                         if res:
@@ -135,5 +141,28 @@ class Graph: # Graph
                                 if not self.vertexes[n+1].get_color():
                                     self.vertexes[n+1].set_color('Blue')
                 # self.show_colored_graph()
+        board = self.get_board()
+        for sq in board:
+            vs = self.get_all_vertexes_in_given_square(board.index(sq))
+            for v in vs:
+                if self.vertexes[v].get_color() == 'Blue':
+                    for v in vs:
+                        if not self.vertexes[v].get_color():
+                            self.vertexes[v].set_color('Red')
+        for v in self.vertexes.keys():
+            if self.vertexes[v].get_color() == 'Blue':
+                if v%2==0:
+                    if v-1 in self.vertexes.keys():
+                        self.vertexes[v-1].set_color('Red')
+                else:
+                    if v+1 in self.vertexes.keys():
+                        self.vertexes[v+1].set_color('Red')
+            if self.vertexes[v].get_color() == 'Red':
+                if v%2==0:
+                    if v-1 in self.vertexes.keys():
+                        self.vertexes[v-1].set_color('Blue')
+                else:
+                    if v+1 in self.vertexes.keys():
+                        self.vertexes[v+1].set_color('Blue')
         self.handle_collapse_delete()
         self.show_colored_graph()
