@@ -4,13 +4,19 @@ import tkinter.messagebox
 import random
 
 
+class GameState:
+    '''
+    Class carrying bool that tells if game has ended
+    '''
+    state = False
+
 def computer_player(mode: int, buttons: list, g: Graph, cycle: list = None) -> None:
     # Operates the simple computer player
     # modes of the player:
     # 0 - normal move
     # 1 - choosing the square to collapse
     # 2 - choosing the item to collapse
-    if mode == 0 and not game_end:
+    if mode == 0 and not GameState.state:
         move1 = -1
         for i in range(0, 2):
             rand = random.randint(0, 8)
@@ -22,10 +28,10 @@ def computer_player(mode: int, buttons: list, g: Graph, cycle: list = None) -> N
             else:
                 btn_pressed(buttons[rand], buttons)
                 move1 = rand
-    elif mode == 1 and not game_end:
+    elif mode == 1 and not GameState.state:
         rand = random.randint(0, len(all_buttons[0])-1)
         square_choice_btn_pressed(all_buttons[0][rand], g, cycle, buttons)
-    elif mode == 2 and not game_end:
+    elif mode == 2 and not GameState.state:
         index = random.randint(0, len(all_buttons[2])-1)
         rand = all_buttons[2][index]
         element_choice_btn_pressed(g, cycle, rand, buttons)
@@ -95,11 +101,10 @@ def element_choice_btn_pressed(gph: Graph, cycle: list, c_choice: int, buttons: 
     label_choice1['text'] = ""
     destroy_all_choice_buttons()
     if check_results(gph)[0]:
-        game_end = True
+        GameState.state = True
         for b in buttons:
             b.configure(state=DISABLED)
         handle_win(check_results(gph)[1], gph)
-        game_end = True
 
 def square_choice_btn_pressed(button: Button, gph: Graph, cycle: list, buttons: list) -> None:
     # Operates on the player's square choice
@@ -263,7 +268,7 @@ def btn_pressed(button: Button, buttons: list) -> bool:
         cycle = g.is_cyclic()[1]
         # print("Graph has a cycle" + f"{cycle}")
         handle_cycle(cycle, move_id, g, buttons)
-        if game_end:
+        if GameState.state:
             return False
         # show_board(g)
         # print(f"The end | Winner: {check_results(g)[1]}")
@@ -271,15 +276,14 @@ def btn_pressed(button: Button, buttons: list) -> bool:
         which_player = not which_player
     move_id += 1
     label['text'] = f"{str('X' if not which_player else 'O')}'s turn"
-    if move_id%4 == 3 and not game_end:
+    if move_id%4 == 3 and not GameState.state:
         computer_player(0, buttons, g)
     return True
 
 tk = Tk()
 tk.title("Quantum Tic Tac Toe")
 g = Graph() # initializing a new graph
-global game_end
-game_end = False
+GameState.state = False
 move_id = 1 # movement counter
 which_player = False # False -> X, True -> O
 all_buttons = []
