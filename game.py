@@ -42,6 +42,15 @@ def destroy_all_choice_buttons():
     while len(all_buttons) > 0:
         del all_buttons[0]
 
+def handle_win(result: set, gph: Graph):
+    if len(result) > 1:
+        if move_id%4==0:
+            tkinter.messagebox.showinfo('WIN', f"Winner: O")   
+        else:
+            tkinter.messagebox.showinfo('WIN', f"Winner: X") 
+    else:
+        tkinter.messagebox.showinfo('WIN', f"Winner: {check_results(gph)[1].pop()}")
+
 def element_choice_btn_pressed(gph: Graph, cycle: list, c_choice: int, buttons: list):
     choice_upper = c_choice
     # add removing stuff from main buttons and hiding additional ones 
@@ -53,7 +62,7 @@ def element_choice_btn_pressed(gph: Graph, cycle: list, c_choice: int, buttons: 
         game_end = True
         for b in buttons:
             b.configure(state=DISABLED)
-        tkinter.messagebox.showinfo('WIN', f'{check_results(gph)[1]}')
+        handle_win(check_results(gph)[1], gph)
 
 def square_choice_btn_pressed(button: Button, gph: Graph, cycle: list, buttons: list):
     choice = int(button['text']) - 1 
