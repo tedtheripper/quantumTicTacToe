@@ -10,6 +10,7 @@ class GameState:
     '''
     state = False
 
+
 def computer_player(mode: int, buttons: list, g: Graph, cycle: list = None) -> None:
     # Operates the simple computer player
     # modes of the player:
@@ -36,6 +37,7 @@ def computer_player(mode: int, buttons: list, g: Graph, cycle: list = None) -> N
         rand = all_buttons[2][index]
         element_choice_btn_pressed(g, cycle, rand, buttons)
 
+# Basic functions
 def if_not_first_move(move_id: int) -> bool:
     # checks if it is the first move of the game
     return False if move_id==1 else True
@@ -44,6 +46,12 @@ def show_board(graph: Graph) -> None:
     # Displays the gameboard in the console
     for v in graph.get_board():
         print(v)
+
+def who(number: int) -> str:
+    # Returns the character which will be placed in the board instead of nodes' id
+    if number%4==1 or number%4==2:
+        return 'X'
+    return 'O'
 
 def get_symbol(number: int) -> str:
     # returns human-friendly node ID
@@ -70,6 +78,17 @@ def update_board(gph: Graph, buttons: list) -> None:
             buttons[i].configure(state=DISABLED)
             res = get_symbol(board[i][0])
             buttons[i]['text'] = str(res)
+
+# Buttons methods
+def disable_all_buttons(buttons: list) -> None:
+    # Disables all board-buttons
+    for b in buttons:
+        b.configure(state=DISABLED)
+
+def enable_all_buttons(buttons: list) -> None:
+    # Enables all board-buttons
+    for b in buttons:
+        b.configure(state=NORMAL)
 
 def destroy_all_choice_buttons() -> None:
     # Removes side buttons for slim and pretty look
@@ -125,6 +144,44 @@ def square_choice_btn_pressed(button: Button, gph: Graph, cycle: list, buttons: 
     if move_id%4 == 2:
         computer_player(2, buttons, gph, cycle)
 
+def btn_pressed(button: Button, buttons: list) -> bool:
+    # Handles player's normal moves
+    global move_id, which_player, g
+    index = buttons.index(button)
+    if g.is_untouchable(index):
+        tkinter.messagebox.showinfo('Error', 'You can\'t use this button')
+        return False
+    if move_id%2 == 0 and (move_id-1 in g.get_all_vertexes_in_given_square(index)):
+        tkinter.messagebox.showinfo('Error', 'You already put something in here')
+        return False
+    g.add_vertex(move_id, index)
+    res = get_symbol(move_id)
+    button['text'] += f" {res}"
+    if if_not_first_move(move_id) and move_id%2 == 0:
+        g.add_edge(move_id, move_id-1)
+    for vertex in g.get_all_vertexes_in_given_square(index):
+        if vertex != move_id:
+            g.add_edge(move_id, vertex)
+    show_board(g)
+    print("-----------------------")
+    g.show_graph()
+    if move_id%2 == 0 and g.is_cyclic()[0]:
+        cycle = g.is_cyclic()[1]
+        # print("Graph has a cycle" + f"{cycle}")
+        handle_cycle(cycle, move_id, g, buttons)
+        if GameState.state:
+            return False
+        # show_board(g)
+        # print(f"The end | Winner: {check_results(g)[1]}")
+    if move_id%2 == 0:
+        which_player = not which_player
+    move_id += 1
+    label['text'] = f"{str('X' if not which_player else 'O')}'s turn"
+    if move_id%4 == 3 and not GameState.state:
+        computer_player(0, buttons, g)
+    return True
+
+# Handlers
 def handle_cycle(cycle: list, move_id_temp: int, gph: Graph, buttons: list) -> None:
     # Handles situation when the cycle is discovered and further actions are needed
     cycled_squares = set([])
@@ -149,12 +206,7 @@ def handle_cycle(cycle: list, move_id_temp: int, gph: Graph, buttons: list) -> N
     if move_id%4 == 2:
         computer_player(1, buttons, gph, cycle=cycle)
 
-def who(number: int) -> str:
-    # Returns the character which will be placed in the board instead of nodes' id
-    if number%4==1 or number%4==2:
-        return 'X'
-    return 'O'
-
+# Checking methods
 def check_row(graph: Graph, row_number: int) -> (bool, str):
     # checks all rows to find the winning situation
     row_number *= 3
@@ -233,52 +285,7 @@ def check_results(graph: Graph) -> (bool, set):
             return True, None
     return False, None
 
-def disable_all_buttons(buttons: list) -> None:
-    # Disables all board-buttons
-    for b in buttons:
-        b.configure(state=DISABLED)
 
-def enable_all_buttons(buttons: list) -> None:
-    # Enables all board-buttons
-    for b in buttons:
-        b.configure(state=NORMAL)
-
-def btn_pressed(button: Button, buttons: list) -> bool:
-    # Handles player's normal moves
-    global move_id, which_player, g
-    index = buttons.index(button)
-    if g.is_untouchable(index):
-        tkinter.messagebox.showinfo('Error', 'You can\'t use this button')
-        return False
-    if move_id%2 == 0 and (move_id-1 in g.get_all_vertexes_in_given_square(index)):
-        tkinter.messagebox.showinfo('Error', 'You already put something in here')
-        return False
-    g.add_vertex(move_id, index)
-    res = get_symbol(move_id)
-    button['text'] += f" {res}"
-    if if_not_first_move(move_id) and move_id%2 == 0:
-        g.add_edge(move_id, move_id-1)
-    for vertex in g.get_all_vertexes_in_given_square(index):
-        if vertex != move_id:
-            g.add_edge(move_id, vertex)
-    show_board(g)
-    print("-----------------------")
-    g.show_graph()
-    if move_id%2 == 0 and g.is_cyclic()[0]:
-        cycle = g.is_cyclic()[1]
-        # print("Graph has a cycle" + f"{cycle}")
-        handle_cycle(cycle, move_id, g, buttons)
-        if GameState.state:
-            return False
-        # show_board(g)
-        # print(f"The end | Winner: {check_results(g)[1]}")
-    if move_id%2 == 0:
-        which_player = not which_player
-    move_id += 1
-    label['text'] = f"{str('X' if not which_player else 'O')}'s turn"
-    if move_id%4 == 3 and not GameState.state:
-        computer_player(0, buttons, g)
-    return True
 
 tk = Tk()
 tk.title("Quantum Tic Tac Toe")
