@@ -102,9 +102,9 @@ def check_row(graph: Graph, row_number: int):
     for i in range(row_number, row_number+3):
         if len(graph.get_board()[i]) == 0:
             return False, None
-        if not graph.is_untouchable(i) and who(graph.get_board()[i][0]) != pos:
+        if not graph.is_untouchable(i) or who(graph.get_board()[i][0]) != pos:
             return False, None
-    return True, who(graph.get_board()[row_number][0])
+    return True, who(graph.get_board()[row_number][0]), 0
 
 def check_column(graph: Graph, column_number: int):
     if len(graph.get_board()[column_number]) == 0:
@@ -113,9 +113,9 @@ def check_column(graph: Graph, column_number: int):
     for i in range(column_number, 9, 3):
         if len(graph.get_board()[i]) == 0:
             return False, None
-        if not graph.is_untouchable(i) and who(graph.get_board()[i][0]) != pos:
+        if not graph.is_untouchable(i) or who(graph.get_board()[i][0]) != pos:
             return False, None
-    return True, who(graph.get_board()[column_number][0])
+    return True, who(graph.get_board()[column_number][0]), 1
 
 def check_X_pattern_left_high(graph: Graph):
     if len(graph.get_board()[0]) == 0:
@@ -124,9 +124,9 @@ def check_X_pattern_left_high(graph: Graph):
     for i in range(0, 9, 4):
         if len(graph.get_board()[i]) == 0:
             return False, None
-        if not graph.is_untouchable(i) and who(graph.get_board()[i][0]) != pos:
+        if not graph.is_untouchable(i) or who(graph.get_board()[i][0]) != pos:
             return False, None
-    return True, who(graph.get_board()[0][0])
+    return True, who(graph.get_board()[0][0]), 2
 
 def check_X_pattern_left_low(graph: Graph):
     if len(graph.get_board()[2]) == 0:
@@ -135,9 +135,9 @@ def check_X_pattern_left_low(graph: Graph):
     for i in range(2, 8, 2):
         if len(graph.get_board()[i]) == 0:
             return False, None
-        if not graph.is_untouchable(i) and who(graph.get_board()[i][0]) != pos:
+        if not graph.is_untouchable(i) or who(graph.get_board()[i][0]) != pos:
             return False, None
-    return True, who(graph.get_board()[2][0])
+    return True, who(graph.get_board()[2][0]), 3
 
 def check_results(graph: Graph):
     # returns tuple (True, who) if game ends
@@ -150,13 +150,17 @@ def check_results(graph: Graph):
     for row in range(0, 3):
         if check_row(graph, row)[0]:
             wins.add(check_row(graph, row)[1])
+            print(check_row(graph, row)[2])
     for column in range(0, 3):
         if check_column(graph, column)[0]:
             wins.add(check_column(graph, column)[1])
+            print(check_column(graph, column)[2])
     if check_X_pattern_left_high(graph)[0]:
         wins.add(check_X_pattern_left_high(graph)[1])
+        print(check_X_pattern_left_high(graph)[2])
     if check_X_pattern_left_low(graph)[0]:
         wins.add(check_X_pattern_left_low(graph)[1])
+        print(check_X_pattern_left_low(graph)[2])
     if len(wins) > 0:
         return True, wins
     return False, None
