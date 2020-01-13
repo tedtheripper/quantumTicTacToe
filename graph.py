@@ -1,13 +1,14 @@
 from vertex import Vertex
 
 
-class Graph: # Graph
+class Graph:  # Graph
     '''
     Class Graph. Represents relations which are costructed on the gameboard
     Contains attributes:
     :param vertexes: container for keeping all nodes
     :type vertexes: dictionary
     '''
+
     def __init__(self):
         # Constructs graph with empty vertex dictionary
         self.vertexes = {}
@@ -33,9 +34,9 @@ class Graph: # Graph
         return id in self.vertexes.keys()
 
     def get_neighbours(self, id: int) -> list:
-        # Returns all neighbours of given node 
+        # Returns all neighbours of given node
         return self.vertexes[id].get_neighbours()
-    
+
     def get_square_index(self, id: int) -> int:
         # Returns index of square containing given node
         return self.vertexes[id].get_index()
@@ -90,7 +91,7 @@ class Graph: # Graph
         for v in self.vertexes.keys():
             if visited[v] == False:
                 if self.is_cyclic_utility(v, visited, -1, cycle_elements, last) == True:
-                    for square in self.get_board(): # checks if cycle isn't inside one square
+                    for square in self.get_board():  # checks if cycle isn't inside one square
                         res = all(elem in square for elem in cycle_elements)
                         if res:
                             return False, None
@@ -100,7 +101,7 @@ class Graph: # Graph
     def is_untouchable(self, sq: int) -> bool:
         # Checks square's mutability
         vs = self.get_all_vertexes_in_given_square(sq)
-        if len(vs)>0 and self.vertexes[vs[0]].get_is_untouchable():
+        if len(vs) > 0 and self.vertexes[vs[0]].get_is_untouchable():
             return True
         return False
 
@@ -115,7 +116,7 @@ class Graph: # Graph
             if not self.vertexes[v].get_color():
                 return False
         return True
-    
+
     def get_correct_square_to_choose(self, cycle: list, id: int) -> list:
         # Returns list of correct squares to choose from when collapse is happening
         vert = self.get_correct_cycle(cycle)
@@ -129,9 +130,9 @@ class Graph: # Graph
         # Returns list of correct nodes to choose from when collapse is happening
         correct_v_to_choose = list(cycle)
         for elem in cycle:
-            if elem%2==0 and elem-1 not in cycle:
+            if elem % 2 == 0 and elem-1 not in cycle:
                 correct_v_to_choose.remove(elem)
-            if elem%2==1 and elem+1 not in cycle:
+            if elem % 2 == 1 and elem+1 not in cycle:
                 correct_v_to_choose.remove(elem)
         return correct_v_to_choose
 
@@ -149,17 +150,17 @@ class Graph: # Graph
     def handle_collapse(self, cycle: list, choice: int) -> None:
         # Responsible for correct graph coloring (Blue, Red)
         self.vertexes[choice].set_color('Blue')
-        if choice%2==0:
-                self.vertexes[choice-1].set_color('Red')
+        if choice % 2 == 0:
+            self.vertexes[choice-1].set_color('Red')
         else:
-                self.vertexes[choice+1].set_color('Red')
+            self.vertexes[choice+1].set_color('Red')
         while not self.all_colored_in_graph(cycle):
             for v in cycle:
                 if self.vertexes[v].get_color() == 'Blue':
                     for n in self.vertexes[v].get_neighbours():
                         if not self.vertexes[n].get_color():
                             self.vertexes[n].set_color('Red')
-                            if n%2==0:
+                            if n % 2 == 0:
                                 if not self.vertexes[n-1].get_color():
                                     self.vertexes[n-1].set_color('Blue')
                             else:
@@ -175,14 +176,14 @@ class Graph: # Graph
                             self.vertexes[v].set_color('Red')
         for v in self.vertexes.keys():
             if self.vertexes[v].get_color() == 'Blue':
-                if v%2==0:
+                if v % 2 == 0:
                     if v-1 in self.vertexes.keys():
                         self.vertexes[v-1].set_color('Red')
                 else:
                     if v+1 in self.vertexes.keys():
                         self.vertexes[v+1].set_color('Red')
             if self.vertexes[v].get_color() == 'Red':
-                if v%2==0:
+                if v % 2 == 0:
                     if v-1 in self.vertexes.keys():
                         self.vertexes[v-1].set_color('Blue')
                 else:
