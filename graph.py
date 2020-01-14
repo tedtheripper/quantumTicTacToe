@@ -60,13 +60,14 @@ class Graph:  # Graph
         # Displays graph relations
         for v in self.vertexes.keys():
             print(f"{v} : {self.vertexes[v].get_neighbours()}")
+        print("\n")
 
     def is_cyclic_utility(self, v: int, visited: list, parent: int, cycle_elements: list, last: list) -> bool:
         # Tool for correct cycle discovering
         visited[v] = True
         for n in self.vertexes[v].get_neighbours():
-            if visited[n] == False:
-                if self.is_cyclic_utility(n, visited, v, cycle_elements, last) == True:
+            if not visited[n]:
+                if self.is_cyclic_utility(n, visited, v, cycle_elements, last):
                     if len(last) > 0:
                         if n == last[0]:
                             last.remove(n)
@@ -89,11 +90,12 @@ class Graph:  # Graph
             visited[v] = False
             # rec_stack[v] = False
         for v in self.vertexes.keys():
-            if visited[v] == False:
-                if self.is_cyclic_utility(v, visited, -1, cycle_elements, last) == True:
+            if not visited[v]:
+                if self.is_cyclic_utility(v, visited, -1, cycle_elements, last):
                     for square in self.get_board():  # checks if cycle isn't inside one square
                         res = all(elem in square for elem in cycle_elements)
                         if res:
+                            print('Cycle is inside one square')
                             return False, None
                     return True, cycle_elements
         return False, None
@@ -190,4 +192,4 @@ class Graph:  # Graph
                     if v+1 in self.vertexes.keys():
                         self.vertexes[v+1].set_color('Blue')
         self.handle_collapse_delete()
-        # self.show_colored_graph()
+        self.show_colored_graph()

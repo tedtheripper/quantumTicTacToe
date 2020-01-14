@@ -1,5 +1,5 @@
 from graph import Graph
-from tkinter import *
+from tkinter import Button, Label, DISABLED, NORMAL, Tk
 import tkinter.messagebox
 import random
 
@@ -19,7 +19,8 @@ def computer_player(mode: int, buttons: list, g: Graph, cycle: list = None) -> N
     # 2 - choosing the item to collapse
     if mode == 0 and not GameState.state:
         move1 = -1
-        for i in range(0, 2):
+        for i in range(2):
+            i = i
             rand = random.randint(0, 8)
             if g.is_untouchable(rand) or rand == move1:
                 while g.is_untouchable(rand) or rand == move1:
@@ -150,7 +151,7 @@ def square_choice_btn_pressed(button: Button, gph: Graph, cycle: list, buttons: 
     # Creating new buttons for choosing the node to collapse
     for c_choice in correct_v_choice:
         result = get_symbol(c_choice)
-        button = Button(tk, text=result, bg='white', height=1, width=2)
+        button = Button(tk, text=result, bg='white', fg='black', height=1, width=2)
         button.configure(command=lambda gph=gph, cycle=cycle, c_choice=c_choice,
                          buttons=buttons: element_choice_btn_pressed(gph, cycle, c_choice, buttons))
         button.grid(row=2, column=i)
@@ -209,17 +210,17 @@ def handle_cycle(cycle: list, move_id_temp: int, gph: Graph, buttons: list) -> N
     for c in cycle:
         cycled_squares.add(g.get_square_index(c))
     for c in cycled_squares:
-        buttons[c].configure(bg='#03bafc')
+        buttons[c].configure(bg='#03bafc', fg='black')
     disable_all_buttons(buttons)
     tkinter.messagebox.showinfo(
         'Cycle', f'The cycle has been found\n{who(move_id_temp+1)} is choosing')
-    label_choice1.configure(width=12)
+    label_choice1.configure(width=13)
     label_choice1['text'] = "Squares available"
     i = 5
     # Creates new buttons for choosing the square
     choice1_buttons = []
     for c in cycled_squares:
-        button = Button(tk, text=c+1, bg='white', height=1, width=1)
+        button = Button(tk, text=c+1, bg='white', fg='black', height=1, width=1)
         button.configure(command=lambda button=button, gph=gph, cycle=cycle,
                          buttons=buttons: square_choice_btn_pressed(button, gph, cycle, buttons))
         button.grid(row=1, column=i)
@@ -310,7 +311,7 @@ def check_results(graph: Graph) -> (bool, set):
         for i in range(0, len(graph.get_board())):
             if graph.is_untouchable(i):
                 res += 1
-        if res == 9:
+        if res == 8:
             return True, None
     return False, None
 
@@ -329,7 +330,7 @@ buttons = []
 # Constructing board from buttons
 for row in range(2, 5):
     for column in range(0, 3):
-        button = Button(tk, text=" ", bg='white', height=5, width=12)
+        button = Button(tk, text=" ", bg='white', fg='black', height=5, width=12)
         button.configure(command=lambda button=button,
                          buttons=buttons: btn_pressed(button, buttons))
         button.grid(row=row, column=column)
