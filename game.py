@@ -85,6 +85,12 @@ def update_board(gph: Graph, buttons: list) -> None:
             buttons[i].configure(state=DISABLED)
             res = get_symbol(board[i][0])
             buttons[i]['text'] = str(res)
+        else:
+            buttons[i]['text'] = ""
+            for j in range(0, len(board[i])):
+                res = get_symbol(board[i][j])
+                buttons[i]['text'] += str(res)
+                buttons[i]['text'] += " "
 
 # Button functions
 
@@ -170,7 +176,7 @@ def btn_pressed(button: Button, buttons: list) -> bool:
     if g.is_untouchable(index):
         tkinter.messagebox.showinfo('Error', 'You can\'t use this button')
         return False
-    if move_id % 2 == 0 and (move_id-1 in g.get_all_vertexes_in_given_square(index)):
+    if move_id % 2 == 0 and (move_id-1 in g.get_all_vertices_in_given_square(index)):
         tkinter.messagebox.showinfo(
             'Error', 'You already put something in here')
         return False
@@ -179,7 +185,7 @@ def btn_pressed(button: Button, buttons: list) -> bool:
     button['text'] += f" {res}"
     if if_not_first_move(move_id) and move_id % 2 == 0:
         g.add_edge(move_id, move_id-1)
-    for vertex in g.get_all_vertexes_in_given_square(index):
+    for vertex in g.get_all_vertices_in_given_square(index):
         if vertex != move_id:
             g.add_edge(move_id, vertex)
     show_board(g)
