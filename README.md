@@ -14,3 +14,4 @@ The quantum version of classic Tic Tac Toe game. [Wikipedia](https://en.wikipedi
 * To win, put Xs in the same pattern as you would do to win normal tic tac toe
 
 ###### In this version you are able to compete with a computer player
+###### Also it is not required to install any additional packages
