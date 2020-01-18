@@ -259,12 +259,7 @@ class Graph:  # Graph
                             else:
                                 if not self.vertices[n+1].get_color():
                                     self.vertices[n+1].set_color('Blue')
-        self.show_colored_graph()
-        print('-------------')
         for i in range(0, 3):
             i = i
             self.handle_collapse_helper()
-        self.show_colored_graph()
-        print('--------------------')
         self.handle_collapse_delete()
-        self.show_colored_graph()

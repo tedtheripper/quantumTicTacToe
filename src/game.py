@@ -13,7 +13,7 @@ class GameState:
     move_id = 1  # movement counter
     which_player = False  # False -> X, True -> O
     all_buttons = []
-    computer_plays = False  # False if computer player is turned off
+    computer_plays = True  # False if computer player is turned off
 
 
 def computer_player(mode: int, buttons: list, g: Graph, cycle: list = None) -> None:
