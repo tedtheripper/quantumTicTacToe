@@ -125,7 +125,7 @@ def destroy_all_choice_buttons() -> None:
 def handle_win(result: set, gph: Graph) -> None:
     # Displays who won the game
     if result is None:
-        tkinter.messagebox.showinfo('Results', f"DRAW")
+        tkinter.messagebox.showinfo('Results', "DRAW")
     else:
         if len(result) > 1:
             if GameState.move_id % 4 == 0:
@@ -331,7 +331,7 @@ def check_results(graph: Graph) -> (bool, set):
         for i in range(0, len(graph.get_board())):
             if graph.is_untouchable(i):
                 res += 1
-        if res == 8:
+        if res == 8 or res == 9:
             return True, None
     return False, None
 

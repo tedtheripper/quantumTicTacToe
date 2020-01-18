@@ -11,7 +11,10 @@ The quantum version of classic Tic Tac Toe game. [Wikipedia](https://en.wikipedi
 
 ![](https://github.com/tedtheripper/quantumTicTacToe/blob/master/img/collapse.png)
 
+![](https://github.com/tedtheripper/quantumTicTacToe/blob/master/img/collapsed1.png)
 * To win, put Xs in the same pattern as you would do to win normal tic tac toe
+
+![](https://github.com/tedtheripper/quantumTicTacToe/blob/master/img/win1.png)
 
 ###### In this version you are able to compete with a computer player
 ###### Also it is not required to install any additional packages
