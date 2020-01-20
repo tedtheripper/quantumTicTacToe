@@ -16,5 +16,8 @@ The quantum version of classic Tic Tac Toe game. [Wikipedia](https://en.wikipedi
 
 ![](https://github.com/tedtheripper/quantumTicTacToe/blob/master/img/win1.png)
 
-###### In this version you are able to compete with a computer player
+###### In this version you are able to compete with a computer player:
+```
+python game.py computer
+```
 ###### Also it is not required to install any additional packages

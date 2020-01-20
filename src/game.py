@@ -2,6 +2,7 @@ from graph import Graph
 from tkinter import Button, Label, DISABLED, NORMAL, Tk
 import tkinter.messagebox
 import random
+import sys
 
 
 class GameState:
@@ -343,7 +344,10 @@ GameState.state = False
 GameState.move_id = 1  # movement counter
 GameState.which_player = False  # False -> X, True -> O
 GameState.all_buttons = []
-
+if len(sys.argv) > 1:
+    GameState.computer_plays = True if sys.argv[1] == "computer" else False
+else:
+    GameState.computer_plays = False
 label = Label(tk, text="X's turn", height=1, width=12)
 label.grid(row=1, column=0)
 buttons = []
