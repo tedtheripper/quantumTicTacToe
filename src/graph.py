@@ -141,10 +141,7 @@ class Graph:  # Graph
         visited = {}
         cycle_elements = []
         last = []
-        # vis = set([])
         has_cycle = False
-        # cycled = []
-        # print('Jest Cykl' if self.has_cycle(1, -1, vis) else 'Nie ma cyklu')
         for v in self.vertices.keys():
             visited = {}
             for v in self.vertices.keys():
@@ -153,10 +150,7 @@ class Graph:  # Graph
             if not visited[v]:
                 if self.is_cyclic_utility(v, visited, -1, cycle_elements, last):
                     result = self.get_correct_cycle(cycle_elements)
-                    print(cycle_elements)
-                    print(result)
                     if self.all_in_one_square(result) or len(result) < 3:
-                        # print('Cycle is inside one square')
                         has_cycle = False
                     else:
                         return True, result
