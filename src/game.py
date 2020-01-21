@@ -337,30 +337,31 @@ def check_results(graph: Graph) -> (bool, set):
     return False, None
 
 
-tk = Tk()
-tk.title("Quantum Tic Tac Toe")
-GameState.g = Graph()  # initializing a new graph
-GameState.state = False
-GameState.move_id = 1  # movement counter
-GameState.which_player = False  # False -> X, True -> O
-GameState.all_buttons = []
-if len(sys.argv) > 1:
-    GameState.computer_plays = True if sys.argv[1] == "computer" else False
-else:
-    GameState.computer_plays = False
-label = Label(tk, text="X's turn", height=1, width=12)
-label.grid(row=1, column=0)
-buttons = []
-# Constructing board from buttons
-for row in range(2, 5):
-    for column in range(0, 3):
-        button = Button(tk, text=" ", bg='white', fg='black', height=5, width=12)
-        button.configure(command=lambda button=button,
-                         buttons=buttons: btn_pressed(button, buttons))
-        button.grid(row=row, column=column)
-        buttons.append(button)
+if __name__ == "__main__":
+    tk = Tk()
+    tk.title("Quantum Tic Tac Toe")
+    GameState.g = Graph()  # initializing a new graph
+    GameState.state = False
+    GameState.move_id = 1  # movement counter
+    GameState.which_player = False  # False -> X, True -> O
+    GameState.all_buttons = []
+    if len(sys.argv) > 1:
+        GameState.computer_plays = True if sys.argv[1] == "computer" else False
+    else:
+        GameState.computer_plays = False
+    label = Label(tk, text="X's turn", height=1, width=12)
+    label.grid(row=1, column=0)
+    buttons = []
+    # Constructing board from buttons
+    for row in range(2, 5):
+        for column in range(0, 3):
+            button = Button(tk, text=" ", bg='white', fg='black', height=5, width=12)
+            button.configure(command=lambda button=button,
+                             buttons=buttons: btn_pressed(button, buttons))
+            button.grid(row=row, column=column)
+            buttons.append(button)
 
-label_choice1 = Label(tk, text="", height=1, width=0)
-label_choice1.grid(row=0, column=4)
+    label_choice1 = Label(tk, text="", height=1, width=0)
+    label_choice1.grid(row=0, column=4)
 
-tk.mainloop()
+    tk.mainloop()

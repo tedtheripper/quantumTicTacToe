@@ -1,4 +1,4 @@
-from src.graph import Graph, BadArgumentError
+from graph import Graph, BadArgumentError
 import pytest
 
 

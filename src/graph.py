@@ -5,10 +5,6 @@ class BadArgumentError(Exception):
     pass
 
 
-class GraphTooSmallError(Exception):
-    pass
-
-
 class Graph:  # Graph
     '''
     Class Graph. Represents relations which are costructed on the gameboard
@@ -95,15 +91,6 @@ class Graph:  # Graph
         for v in self.vertices.keys():
             print(f"{v} : {self.vertices[v].get_neighbours()}")
         print("\n")
-
-    '''def has_cycle(self, v: int, parent: int, visited: set) -> bool:
-        if v in visited:
-            return True
-        visited.add(v)
-        for u in self.vertices[v].get_neighbours():
-            if u != parent and self.has_cycle(u, v, visited):
-                return True
-        return False'''
 
     def is_cyclic_utility(self, v: int, visited: list, parent: int, cycle_elements: list, last: list) -> bool:
         # Tool for correct cycle discovering
