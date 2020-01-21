@@ -21,3 +21,4 @@ The quantum version of classic Tic Tac Toe game. [Wikipedia](https://en.wikipedi
 python game.py computer
 ```
 ###### Also it is not required to install any additional packages
+Check out this short user ![manual](https://github.com/tedtheripper/quantumTicTacToe/blob/master/user_guide.txt)
