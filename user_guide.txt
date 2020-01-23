@@ -12,8 +12,8 @@ Welcome, this is a simple step-by-step guide on how to play my quantum tic tac t
 2. Starting the game
     - You have to decide if you want to compete against computer player 
 	or just play with your friend (in extreme circumstances with yourself)
-    - To play with a computer player simply write 'python game.py computer' in your command line in src folder
-    - To run it without computer player turned on, just double click game.py file or run 'python game.py' command
+    - To play with a computer player simply write 'python3 game.py computer' in your command line in src folder
+    - To run it without computer player turned on, just double click game.py file or run 'python3 game.py' command
     - If you run in any issue feel free to add them in the issues section on the github page
 3. Playing the game
     - You are welcomed with a well known, simple 3x3 board. 
