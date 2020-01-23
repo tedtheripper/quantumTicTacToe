@@ -1,4 +1,5 @@
 Welcome, this is a simple step-by-step guide on how to play my quantum tic tac toe game
+
 1. Before starting the game
     - First it is necesarry to read on the internet about this type of tic tac toe game
 	because it differs a lot from the standard version
@@ -9,12 +10,14 @@ Welcome, this is a simple step-by-step guide on how to play my quantum tic tac t
 	https://github.com/tedtheripper/quantumTicTacToe.git
     - Otherwise you can download .zip file to your machine and unpack it
 	https://github.com/tedtheripper/quantumTicTacToe/archive/master.zip
+
 2. Starting the game
     - You have to decide if you want to compete against computer player 
 	or just play with your friend (in extreme circumstances with yourself)
     - To play with a computer player simply write 'python3 game.py computer' in your command line in src folder
     - To run it without computer player turned on, just double click game.py file or run 'python3 game.py' command
     - If you run in any issue feel free to add them in the issues section on the github page
+
 3. Playing the game
     - You are welcomed with a well known, simple 3x3 board. 
 	The label on the top shows whose turn is currently undergoing
@@ -27,6 +30,7 @@ Welcome, this is a simple step-by-step guide on how to play my quantum tic tac t
 	NOTE! At this time you are still able to change your square of choice
     - Then choose the element you would like to keep in this square and let the game handle the rest
     - Now go ahead and make more moves to win the game
+
 4. Ending the game
     - If there is a win or a draw, pop-up message will be displayed
     - In quantum version there is an option when both players win, but the rules say which one will be awarded more points
